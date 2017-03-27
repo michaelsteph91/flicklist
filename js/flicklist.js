@@ -8,7 +8,7 @@ var model = {
 
 var api = {
   root: "https://api.themoviedb.org/3",
-  token: "TODO" // TODO 0 put your api key here
+  token: "17d585585633f2e3903d034649a2dd61" // TODO 0 put your api key here
 }
 
 
@@ -26,15 +26,15 @@ function discoverMovies(callback) {
 		success: function(response) {
 			console.log("We got a response from The Movie DB!");
 			console.log(response);
-			
+
 			// TODO 2
 			// update the model, setting its .browseItems property equal to the movies we recieved in the response
-			
-			// invoke the callback function that was passed in. 
+            model.browseItems = response.results
+			// invoke the callback function that was passed in.
 			callback();
 		}
 	});
-  
+
 }
 
 
@@ -43,23 +43,37 @@ function discoverMovies(callback) {
  */
 function render() {
   // TODO 7
-  // clear everything from both lists
-  
+  $("#section-watchlist ul").empty()
+  $("#section-browse ul").empty()
+
+
   // TODO 6
-  // for each movie on the user's watchlist, insert a list item into the <ul> in the watchlist section
-  
-  // for each movie on the current browse list, 
+  model.watchlistItems.forEach(function(movie) {
+  	var movie_title = $("<li></li>").text(movie.title);
+  	$("#section-watchlist ul").append(movie_title);
+  });
+
+  // for each movie on the current browse list,
   model.browseItems.forEach(function(movie) {
 		// TODO 3
-		// insert a list item into the <ul> in the browse section
-		
-		// TODO 4
-		// the list item should include a button that says "Add to Watchlist"
-		
-		// TODO 5
-		// when the button is clicked, this movie should be added to the model's watchlist and render() should be called again
+
+        var myButton = $("<button></button>").text("Add to Watchlist");
+
+        var title = $("<p></p>").text(movie.title);
+		var listitem = $("<li></li>").append(title)
+		$("#section-browse ul").append(listitem);
+        $("#section-browse ul").append(myButton);
+
+
+          myButton.click(function() {
+              model.watchlistItems.push(movie)
+              render()
+
+          });
+
+
   });
-  
+
 }
 
 
@@ -68,4 +82,3 @@ function render() {
 $(document).ready(function() {
   discoverMovies(render);
 });
-
